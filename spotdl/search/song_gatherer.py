@@ -4,6 +4,9 @@ from pathlib import Path
 from typing import Dict, List
 import platform
 
+from retry import retry
+from spotipy import SpotifyException
+
 from spotdl.providers import (
     metadata_provider,
     yt_provider,
@@ -19,6 +22,7 @@ from spotdl.providers.provider_utils import (
 )
 
 
+@retry(exceptions=(SpotifyException, ), tries=3, delay=5, jitter=10)
 def from_spotify_url(
     spotify_url: str,
     output_format: str = None,

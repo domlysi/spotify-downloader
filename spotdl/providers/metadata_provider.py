@@ -1,6 +1,10 @@
+from retry import retry
+from spotipy import SpotifyException
+
 from spotdl.search import SpotifyClient
 
 
+@retry(exceptions=(SpotifyException, ), tries=3, delay=5, jitter=10)
 def from_url(spotify_url: str):
     if "open.spotify.com" not in spotify_url or "track" not in spotify_url:
         raise Exception(f"passed URL is not that of a track: {spotify_url}")
